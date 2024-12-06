@@ -1,0 +1,24 @@
+models:
+  Company:
+    name: string:100
+    logo: json
+  
+  Product:
+    title: string
+    description: text
+    characteristics: json
+    company_id: id foreign
+    category_id: id foreign
+    price: number
+    images: json
+    relationships:
+      belongsToMany: User
+
+  Discount:
+    amount: number,
+    type: enum:percent,currency
+    status: boolean
+
+  Category:
+    title: string
+    image: json
