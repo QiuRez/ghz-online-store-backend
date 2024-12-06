@@ -34,9 +34,10 @@ class CreateAccount extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        dump($notifiable);
         return (new MailMessage)
                     ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->action('Notification Action', url(config('app.frontend_url') . '/confirm/register/'))
                     ->line('Thank you for using our application!');
     }
 
