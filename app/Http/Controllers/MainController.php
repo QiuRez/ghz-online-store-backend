@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\MainInfoResource;
 use App\Http\Resources\ResponseBase\SuccessResponse;
 use App\Models\Category;
+use App\Models\Company;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
@@ -16,8 +17,14 @@ class MainController extends Controller
             return $item;
         });
 
+        $companies = Company::all()->map(function($item) {
+            $item['logo'] = config('app.url') . "/storage/{$item['logo']}";
+            return $item;
+        });
+
         $mainInfo = collect()->merge([
-            'categories' => $categories
+            'categories' => $categories,
+            'companies' => $companies
         ]);
 
 
