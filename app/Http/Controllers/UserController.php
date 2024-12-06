@@ -4,58 +4,63 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EmailVerifyRequest;
 use App\Http\Requests\EmailVerifyReSentRequest;
-use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserAuthRequest;
+use App\Http\Requests\UserSendCodeRequest;
 use App\Http\Resources\ResponseBase\ErrorResponse;
 use App\Http\Resources\ResponseBase\SuccessEmptyResponse;
 use App\Http\Resources\ResponseBase\SuccessResponse;
 use App\Http\Resources\UserRegisterVerifyResource;
+use App\Mail\UserAuthMail;
+use App\Mail\UserRegisterMail;
 use App\Models\User;
+use Auth;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
 use Str;
 
 class UserController extends Controller
 {
-    public function auth(UserRegisterRequest $request)
+    public function sendCode(UserSendCodeRequest $request)
     {
-        $user = User::create([
-            'email' => $request->get('email'),
-            'hash' => Str::random(32)
-        ]);
+        $code = rand(000000, 999999);
+        if ($user = User::firstWhere('email', '=', $request->get('email'))) {
 
-        event(new Registered($user));
+            $user->update(['code' => $code ]);
+
+            Mail::to($request->get('email'))->send(new UserAuthMail($code));
+        } else {
+            User::create([
+                'email' => $request->get('email'),
+                'code' => $code
+            ]);
+            Mail::to($request->get('email'))->send(new UserRegisterMail($code));
+        }
+
+        return SuccessEmptyResponse::make('Email sent');
     }
-    public function registerVerify(EmailVerifyRequest $request)
+    public function auth(UserAuthRequest $request)
     {
-        if ($user = User::query()->firstWhere('hash', '=', $request->get('hash'))) {
+        
+        if ($user = User::firstWhere($request->validated())) {
             if (! $user->email_verified_at) {
-                $user->update([
-                    // 'email_verified_at' => now(),
-                    // 'hash' => ''
-                ]);
-
-                $token = $user->createToken('user')->plainTextToken;
-
-                $response = [
-                    'user' => $user,
-                    'token' => $token
-                ];
-
-                return SuccessResponse::make(UserRegisterVerifyResource::make($response), 'Email Success Verified');
+                $user->email_verified_at = now();
             }
 
-            return ErrorResponse::make('Email alredy verified');
-        } 
+            $user->code = '';
 
-        return ErrorResponse::make('Verify Error');
-    }
-    public function registerVerifyReSent(EmailVerifyReSentRequest $request)
-    {
-        $user = User::firstWhere('email', '=', $request->get('email'));
-        event(new Registered($user));
-    }
+            $user->save();
 
-    public function test()
-    {
-        // Mail::to('qiuopa@gmail.com')->send()
+            $token = $user->createToken('user')->plainTextToken;
+
+            $response = [
+                'user' => $user,
+                'token' => $token
+            ];
+
+            return SuccessResponse::make(UserRegisterVerifyResource::make($response), 'Email Success Verified');
+        }
+
+        return ErrorResponse::make('Code incorrect');
+
     }
 }
