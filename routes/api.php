@@ -12,6 +12,7 @@ Route::get('category/products/{category:slug}', [CategoryController::class, 'get
 Route::middleware(['auth:sanctum'])->group(function() {
   Route::post('/user/cart/add', [CartController::class, 'addProduct']);
   Route::post('/user/cart/remove', [CartController::class, 'removeProduct']);
+  Route::post('/user/cart/removeAllProduct', [CartController::class, 'removeAllProduct']);
   Route::get('/user/cart/get', [CartController::class, 'getCart']);
 });
 

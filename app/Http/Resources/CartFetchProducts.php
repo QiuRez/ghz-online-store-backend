@@ -15,7 +15,7 @@ class CartFetchProducts extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if (count($this->resource) && $this->resource instanceof Collection) {
+        if ($this->resource->count() && $this->resource instanceof Collection) {
             $countsProductsArray = array_count_values(array_column($this->resource->toArray(), 'id'));
 
             $products = $this->resource->unique();
@@ -27,15 +27,21 @@ class CartFetchProducts extends JsonResource
             $this->resource['products'] = $products->map(function($item) use($countsProductsArray) {
                 $item['count'] = $countsProductsArray[$item['id']];
                 $item['price'] = number_format((int) $item['price'] * (int) $item['count'], 2);
+                $item['images'] = config('app.url') . "/storage/{$item['images']}";
                 return $item;
             })->toArray();
 
-            $this->resource['allPrice'] = number_format((int)$allPrice, 0);;
+            $this->resource['allPrice'] = number_format((int)$allPrice, 0);
+            return [
+                'products' => $this->resource['products'],
+                'allPrice' => $this->resource['allPrice']
+            ];
         }
 
         return [
-            'products' => $this->resource['products'],
-            'allPrice' => $this->resource['allPrice']
+            'products' => [],
+            'allPrice' => 0
         ];
+
     }
 }

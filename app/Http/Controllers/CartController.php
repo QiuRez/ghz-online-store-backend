@@ -24,7 +24,7 @@ class CartController extends Controller
     {
         if ($product = Product::find($request->get('product_id'))) {
             $request->user()->products()->attach($product->id);
-            return SuccessResponse::make(CartFetchProducts::make($request->user()->products()), 'Product success add to user cart');
+            return SuccessResponse::make(CartFetchProducts::make($request->user()->products()->get()), 'Product success add to user cart');
         }
         return ErrorResponse::make('Product not found');
     }
@@ -38,8 +38,15 @@ class CartController extends Controller
                 ->take(1)
                 ->delete();
 
-            return SuccessResponse::make($request->user()->products(), 'Product success remove from user cart');
+            return SuccessResponse::make(CartFetchProducts::make($request->user()->products()->get()), 'Product success remove from user cart');
         }
         return ErrorResponse::make('Product not found');
+    }
+
+    public function removeAllProduct(CartProductRequest $request)
+    {
+        $request->user()->products()->detach($request->get('product_id'));
+
+        return SuccessResponse::make(CartFetchProducts::make($request->user()->products()->get()), 'Product success remove from user cart');
     }
 }
