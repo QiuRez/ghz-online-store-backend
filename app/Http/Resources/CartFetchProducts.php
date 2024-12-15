@@ -32,6 +32,7 @@ class CartFetchProducts extends JsonResource
             })->toArray();
 
             $this->resource['allPrice'] = number_format((int)$allPrice, 0);
+
             return [
                 'products' => $this->resource['products'],
                 'allPrice' => $this->resource['allPrice']

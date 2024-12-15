@@ -3,11 +3,15 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('main/info', [MainController::class, 'getMainInfo']);
 Route::get('category/products/{category:slug}', [CategoryController::class, 'getCategoryProduct']);
+Route::get('products/all', [ProductController::class, 'getProducts']);
+Route::get('products/discount/all', [ProductController::class, 'getDiscountsProduct']);
+Route::get('products/first/{slug}', [ProductController::class, 'getOneProduct']);
 
 Route::middleware(['auth:sanctum'])->group(function() {
   Route::post('/user/cart/add', [CartController::class, 'addProduct']);
