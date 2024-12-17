@@ -18,6 +18,7 @@ class CompanyResource extends JsonResource
         if ($this->resource instanceof Company) {
             $this->resource['logo'] = config('app.url') . "/storage/{$this->resource['logo']}";
         }
+
         return $this->resource->toArray();
     }
 }

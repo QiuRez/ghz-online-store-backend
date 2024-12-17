@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\Builder;
 
 class Product extends Model
 {
@@ -76,6 +77,7 @@ class Product extends Model
 
     public function discount(): BelongsToMany
     {
-        return $this->belongsToMany(Discount::class, 'product_discount');
+        return $this->belongsToMany(Discount::class, 'product_discount')
+            ->where('status', '=', 1);
     }
 }

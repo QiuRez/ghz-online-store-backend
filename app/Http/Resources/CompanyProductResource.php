@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoriesResource extends JsonResource
+class CompanyProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +14,9 @@ class CategoriesResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-
-        if ($this->resource instanceof Category) {
-            $this->resource['image'] = config('app.url') . "/storage/{$this->resource['image']}";
-        }
-
-        return $this->resource->toArray();
+        return [
+            'products' => ProductResource::make($this->resource['products']),
+            'company' => CompanyResource::make($this->resource['company'])
+        ];
     }
 }

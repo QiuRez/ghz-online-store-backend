@@ -20,8 +20,15 @@ class CartFetchProducts extends JsonResource
 
             $products = $this->resource->unique();
 
-            $allPrice = array_reduce($this->resource->toArray(), function($sum, $item) {
-                return $sum + (int)$item['price'];
+            $allPrice = 0;
+
+            $allPriceWithDiscount = array_reduce($this->resource->toArray(), function($sum, $item) use(&$allPrice) {
+                $allPrice += (float)$item['price'];
+                if ($item['price_discount']) {
+                    $priceDiscount = (float)str_replace(',', '', $item['price_discount']);
+                    return $sum + $priceDiscount;
+                }
+                return $sum + (float)$item['price'];
             });
 
             $this->resource['products'] = $products->map(function($item) use($countsProductsArray) {
@@ -31,16 +38,19 @@ class CartFetchProducts extends JsonResource
                 return $item;
             })->toArray();
 
+            $this->resource['allPriceDiscount'] = number_format((int)$allPriceWithDiscount, 0);
             $this->resource['allPrice'] = number_format((int)$allPrice, 0);
 
             return [
                 'products' => $this->resource['products'],
+                'allPriceDiscount' => $this->resource['allPriceDiscount'],
                 'allPrice' => $this->resource['allPrice']
             ];
         }
 
         return [
             'products' => [],
+            'allPriceDiscount' => 0,
             'allPrice' => 0
         ];
 
