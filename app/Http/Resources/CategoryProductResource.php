@@ -16,7 +16,7 @@ class CategoryProductResource extends JsonResource
     {
         return [
             'category' => CategoriesResource::make($this->resource['category']),
-            'products' => ProductResource::collection($this->resource['products'])
+            'products' => ProductResource::make($this->resource['products'])
         ];
     }
 }

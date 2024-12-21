@@ -38,6 +38,8 @@ class ProductResource extends Resource
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'title')
                     ->required(),
+                Forms\Components\Select::make('discount')
+                    ->relationship('discounts','id'),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->maxLength(255),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,10 @@ class CompanyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        if ($this->resource instanceof Company) {
+            $this->resource['logo'] = config('app.url') . "/storage/{$this->resource['logo']}";
+        }
+
+        return $this->resource->toArray();
     }
 }
