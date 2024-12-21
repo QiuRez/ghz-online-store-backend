@@ -15,6 +15,8 @@ Route::get('products/all', [ProductController::class, 'getProducts']);
 Route::get('products/discount/all', [ProductController::class, 'getDiscountsProduct']);
 Route::get('products/first/{slug}', [ProductController::class, 'getOneProduct']);
 
+Route::get('search/{q}', [MainController::class, 'search']);
+
 Route::middleware(['auth:sanctum'])->group(function() {
   Route::post('/user/cart/add', [CartController::class, 'addProduct']);
   Route::post('/user/cart/remove', [CartController::class, 'removeProduct']);

@@ -80,4 +80,9 @@ class Product extends Model
         return $this->belongsToMany(Discount::class, 'product_discount')
             ->where('status', '=', 1);
     }
+
+    public function discounts(): BelongsToMany
+    {
+        return $this->belongsToMany(Discount::class, 'product_discount');
+    }
 }
