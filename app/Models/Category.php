@@ -18,7 +18,8 @@ class Category extends Model
     protected $fillable = [
         'title',
         'image',
-        'slug'
+        'slug',
+        'status'
     ];
 
     /**
@@ -29,6 +30,7 @@ class Category extends Model
     protected $casts = [
         'id' => 'integer',
         'image' => 'array',
+        'status' => 'boolean'
     ];
 
     public function products(): HasMany

@@ -2,16 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\DiscountTypeEnum;
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Discount;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
@@ -39,7 +38,11 @@ class ProductResource extends Resource
                     ->relationship('category', 'title')
                     ->required(),
                 Forms\Components\Select::make('discount')
-                    ->relationship('discounts','id'),
+                    ->relationship('discounts', 'amount')
+                    ->getOptionLabelFromRecordUsing(function (Discount $discount) {
+                        $prefix = $discount->type == DiscountTypeEnum::PERCENT->value ? '%' : ' Р';
+                        return "{$discount->amount} $prefix";
+                    }),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->maxLength(255),

@@ -4,15 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Enums\DiscountTypeEnum;
 use App\Filament\Resources\DiscountResource\Pages;
-use App\Filament\Resources\DiscountResource\RelationManagers;
 use App\Models\Discount;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DiscountResource extends Resource
 {
@@ -27,11 +24,10 @@ class DiscountResource extends Resource
                 Forms\Components\TextInput::make('amount')
                     ->numeric()
                     ->minValue(0)
-                    ->maxValue(100)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('type')
-                    ->options(DiscountTypeEnum::toArray())
+                    ->options(DiscountTypeEnum::class)
                     ->required(),
                 Forms\Components\Toggle::make('status')
                     ->required(),
