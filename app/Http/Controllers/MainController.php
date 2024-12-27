@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SearchRequest;
 use App\Http\Resources\MainInfoResource;
 use App\Http\Resources\ResponseBase\SuccessResponse;
 use App\Http\Resources\SearchResource;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Product;
-use Illuminate\Http\Request;
 
 class MainController extends Controller
 {
     public function getMainInfo()
     {
         $mainInfo = collect()->merge([
-            'categories' => Category::all(),
+            'categories' => Category::where('status', '=', true)->get(),
             'companies' => Company::all()
         ]);
 
